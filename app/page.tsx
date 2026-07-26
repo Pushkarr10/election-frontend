@@ -34,7 +34,7 @@ type LeaderboardData = {
 };
 
 const ADMIN_EMAIL = "pushkar_ramteke_aids@moderncoe.edu.in";
-const API = " https://lint-penpal-antihero.ngrok-free.dev";
+const API = process.env.NEXT_PUBLIC_API_URL || "https://backend--pushkarramteke.replit.app";
 
 export default function PlatformDashboard() {
   const { data: session, status } = useSession();
