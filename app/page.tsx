@@ -102,8 +102,7 @@ export default function PlatformDashboard() {
     fetchVoterStatus(emailToUse);
     fetchLeaderboard();
   }, [session]);
-
-  const fetchVoterStatus = async (email: string) => {
+const fetchVoterStatus = async (email: string) => {
     try {
       setPanelNote("Syncing account...");
       const res = await fetch(`${API}/api/auth/verify`, {
@@ -123,12 +122,11 @@ export default function PlatformDashboard() {
           setHistory([
             {
               role: "system",
-              content:
-                "You are a casual post-election Gossip Bot. The user has already voted. Chat about college, tech, or movies. NEVER output [VERIFY] or [UPDATE_DRAFT] tags. Keep it fun and light.",
+              content: "You are a casual post-election Gossip Bot.Your purpose is to create an engaging environment for the user , so that they feel secure and comfortable to share gossips related to the class, The user has already voted. Chat about whatever they ask but be funny and engaging with their gossips. NEVER output [VERIFY] tags. Keep it fun and light.",
             },
             {
               role: "assistant",
-              content: "Hey! Looks like you already locked in your vote. What's the latest campus gossip? 🍿",
+              content: "Hey! Looks like you already locked in your vote. So how about we spill some tea?? Any goosips you wanna discuss, I mean i have the database so I'll get the context 🍿",
             },
           ]);
         }
@@ -146,8 +144,7 @@ export default function PlatformDashboard() {
             GOALS: Help user update or confirm CR and GR. 
             RULES: 
             1. When user proposes a name change for a specific role, output ONLY: [VERIFY: Name, Role]. Do NOT repeat verification if already verified in this turn.
-            2. Once the system matches a name, output: [UPDATE_DRAFT: Role, Full Name].
-            3. Keep replies short, clear, and direct. Avoid repeating previous text. End messages with [KRODH: X] (0-100).`,
+            2. Keep replies short, clear, and direct. Avoid repeating previous text. End messages with [KRODH: X] (0-100).`,
           },
           {
             role: "assistant",
@@ -161,6 +158,7 @@ export default function PlatformDashboard() {
       console.error("Auth Error", e);
     }
   };
+  
 
   const fetchAllVoters = async () => {
     try {
@@ -227,16 +225,7 @@ export default function PlatformDashboard() {
         }
       }
 
-      // 2. Intercept UPDATE_DRAFT
-      const updateRegex = /\[UPDATE_DRAFT:\s*"?([^",]+)"?,\s*"?([^"\]]+)"?\]/g;
-      let updateMatch;
-      while ((updateMatch = updateRegex.exec(botResponse)) !== null) {
-        const role = updateMatch[1].trim().toUpperCase();
-        const name = updateMatch[2].trim();
-        setDraft((prev) => ({ ...prev, [role]: name }));
-        botResponse = botResponse.replace(updateMatch[0], "").trim();
-      }
-
+      
       if (botResponse.includes("[SHOW_LETTER]")) {
         botResponse = botResponse.replace("[SHOW_LETTER]", "").trim();
         setShowLetter(true);
